@@ -27,14 +27,17 @@ class _HomePageState extends State<HomePage> {
   String imageUrl = ''; // Stores the URL entered by the user
   String imageToShow = ''; // Stores the URL entered by the user
   bool isMenuOpen = false; // Stores the state of the popup menu
+  bool isFullScreen = false; // Stores the state of the fullscreen mode
   // Function to toggle fullscreen mode
-  void toggleFullscreen() {
-    if (html.document.fullscreenElement != null) {
-      html.document.exitFullscreen();
-    } else {
-      html.document.documentElement?.requestFullscreen();
-    }
+  void enterFullscreen() {
+    html.document.documentElement?.requestFullscreen();
+    isFullScreen = true;
   }
+  void exitFullscreen() {
+    html.document.exitFullscreen();
+    isFullScreen = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +51,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onDoubleTap: toggleFullscreen,
+                    onDoubleTap: isFullScreen ? exitFullscreen : enterFullscreen,
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: imageToShow.isNotEmpty
@@ -111,9 +114,11 @@ class _HomePageState extends State<HomePage> {
         },
         onSelected: (String item) {
           if (item == 'enter_fullscreen') {
-            toggleFullscreen();
+            enterFullscreen();
           } else if (item == 'exit_fullscreen') {
-            toggleFullscreen();
+            {
+              exitFullscreen();
+            }
           }
           isMenuOpen = false;
           setState(() {
